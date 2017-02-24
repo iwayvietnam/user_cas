@@ -67,6 +67,23 @@ if (OCP\App::isEnabled('user_cas')) {
 		OC_App::registerLogIn(array('href' => '?app=user_cas', 'name' => 'CAS Login'));
 	}
 
+	if (isFrontChannelLogoutRequest()) {
+		OC_User::logout();
+
+		$casHostname = OCP\Config::getAppValue('user_cas', 'cas_server_hostname', $_SERVER['SERVER_NAME']);
+		$casPort = (int) OCP\Config::getAppValue('user_cas', 'cas_server_port', 443);
+		$casPath = OCP\Config::getAppValue('user_cas', 'cas_server_path', '/cas');
+		$casPath = preg_replace('/\/\//', '/', '/' . $casPath);
+
+		$redirectUrl = 'https://' . $casHostname;
+		if ($casPort != 443) {
+			$redirectUrl .= ':' . $casPort;
+		}
+		$redirectUrl .= $casPath;
+		header( 'Location: ' . $redirectUrl);
+		exit();
+	}
+
 }
 
 /**
@@ -98,3 +115,6 @@ function shouldEnforceAuthentication()
 	);
 }
 
+function isFrontChannelLogoutRequest() {
+	return !empty($_GET['SAMLRequest']);
+}
