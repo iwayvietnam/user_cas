@@ -103,6 +103,10 @@ function casSingleLogoutRequestHandle() {
 	if (isCasFrontChannelLogoutRequest()) {
 		OC_User::logout();
 
+		$logoutMessage = uncompressCasLogoutMessage();
+		if (!empty($logoutMessage)) {
+			\OCP\Util::writeLog('cas','Logout request:' . $logoutMessage, \OCP\Util::DEBUG);
+		}
 		$relayStateValue = htmlspecialchars($_GET['RelayState'], ENT_QUOTES, 'UTF-8');
 		if (!empty($relayStateValue)) {
 			$casHostname = OCP\Config::getAppValue('user_cas', 'cas_server_hostname', $_SERVER['SERVER_NAME']);
@@ -120,6 +124,11 @@ function casSingleLogoutRequestHandle() {
 			exit();
 		}
 	}
+}
+
+function uncompressCasLogoutMessage() {
+	$message = htmlspecialchars($_GET['SAMLRequest'], ENT_QUOTES, 'UTF-8');
+	return gzinflate(base64_decode($message));
 }
 
 function isCasFrontChannelLogoutRequest() {
