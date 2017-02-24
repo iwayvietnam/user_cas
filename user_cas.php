@@ -107,8 +107,8 @@ class OC_USER_CAS extends OC_User_Backend {
 		if (!$this->cas_link_to_ldap_backend) {
 			return false;
 		}
-		if ($this -> ldapBackendAdapter === false) {
-			$this -> ldapBackendAdapter = new LdapBackendAdapter();
+		if ($this->ldapBackendAdapter === false) {
+			$this->ldapBackendAdapter = new LdapBackendAdapter();
 		}
 		return true;
 	}

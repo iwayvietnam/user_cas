@@ -43,7 +43,7 @@ if (OCP\App::isEnabled('user_cas')) {
 
 	if( (isset($_GET['app']) && $_GET['app'] == 'user_cas') || $force_login ) {
 
-		if (OC_USER_CAS :: initialized_php_cas()) {
+		if (OC_USER_CAS::initialized_php_cas()) {
 
 			phpCAS::forceAuthentication();
 
