@@ -32,7 +32,7 @@ if (OCP\App::isEnabled('user_cas')) {
 	OCP\App::registerAdmin('user_cas', 'settings');
 
 	// register user backend
-	OC_User::useBackend( 'CAS' );
+	OC_User::useBackend('CAS');
 
 	OC::$CLASSPATH['OC_USER_CAS_Hooks'] = 'user_cas/lib/hooks.php';
 	OCP\Util::connectHook('OC_User', 'post_createUser', 'OC_USER_CAS_Hooks', 'post_createUser');
@@ -41,7 +41,7 @@ if (OCP\App::isEnabled('user_cas')) {
 
 	$force_login = shouldEnforceAuthentication();
 
-	if( (isset($_GET['app']) && $_GET['app'] == 'user_cas') || $force_login ) {
+	if ((isset($_GET['app']) && $_GET['app'] == 'user_cas') || $force_login) {
 
 		if (OC_USER_CAS::initialized_php_cas()) {
 
@@ -53,7 +53,7 @@ if (OCP\App::isEnabled('user_cas')) {
 			}
 		
 			if (isset($_SERVER["QUERY_STRING"]) && !empty($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] != 'app=user_cas') {
-				header( 'Location: ' . OC::$WEBROOT . '/?' . $_SERVER["QUERY_STRING"]);
+				header('Location: ' . OC::$WEBROOT . '/?' . $_SERVER["QUERY_STRING"]);
 				exit();
 			}
 		}
@@ -67,23 +67,7 @@ if (OCP\App::isEnabled('user_cas')) {
 		OC_App::registerLogIn(array('href' => '?app=user_cas', 'name' => 'CAS Login'));
 	}
 
-	if (isFrontChannelLogoutRequest()) {
-		OC_User::logout();
-
-		$casHostname = OCP\Config::getAppValue('user_cas', 'cas_server_hostname', $_SERVER['SERVER_NAME']);
-		$casPort = (int) OCP\Config::getAppValue('user_cas', 'cas_server_port', 443);
-		$casPath = OCP\Config::getAppValue('user_cas', 'cas_server_path', '/cas');
-		$casPath = preg_replace('/\/\//', '/', '/' . $casPath);
-
-		$redirectUrl = 'https://' . $casHostname;
-		if ($casPort != 443) {
-			$redirectUrl .= ':' . $casPort;
-		}
-		$redirectUrl .= $casPath;
-		header( 'Location: ' . $redirectUrl);
-		exit();
-	}
-
+	casSingleLogoutRequestHandle();
 }
 
 /**
@@ -115,6 +99,29 @@ function shouldEnforceAuthentication()
 	);
 }
 
-function isFrontChannelLogoutRequest() {
+function casSingleLogoutRequestHandle() {
+	if (isCasFrontChannelLogoutRequest()) {
+		OC_User::logout();
+
+		$relayStateValue = htmlspecialchars($_GET['RelayState'], ENT_QUOTES, 'UTF-8');
+		if (!empty($relayStateValue)) {
+			$casHostname = OCP\Config::getAppValue('user_cas', 'cas_server_hostname', $_SERVER['SERVER_NAME']);
+			$casPort = (int) OCP\Config::getAppValue('user_cas', 'cas_server_port', 443);
+			$casPath = OCP\Config::getAppValue('user_cas', 'cas_server_path', '/cas');
+
+			$redirectUrl = 'https://' . $casHostname;
+			if ($casPort != 443) {
+				$redirectUrl .= ':' . $casPort;
+			}
+			$redirectUrl .= '/' . trim($casPath, '/');
+			$redirectUrl .= '/logout?_eventId=next'
+			$redirectUrl .= '&RelayState=' . $relayStateValue;
+			header('Location: ' . $redirectUrl);
+			exit();
+		}
+	}
+}
+
+function isCasFrontChannelLogoutRequest() {
 	return !empty($_GET['SAMLRequest']);
 }
