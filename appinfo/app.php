@@ -23,8 +23,6 @@
  */
 
 
-
-
 if (OCP\App::isEnabled('user_cas')) {
 
 	require_once 'user_cas/user_cas.php';
@@ -118,7 +116,7 @@ function casSingleLogoutRequestHandle() {
 				$redirectUrl .= ':' . $casPort;
 			}
 			$redirectUrl .= '/' . trim($casPath, '/');
-			$redirectUrl .= '/logout?_eventId=next'
+			$redirectUrl .= '/logout?_eventId=next';
 			$redirectUrl .= '&RelayState=' . $relayStateValue;
 			header('Location: ' . $redirectUrl);
 			exit();
