@@ -104,7 +104,7 @@ function casSingleLogoutRequestHandle() {
 		if (!empty($logoutMessage)) {
 			\OCP\Util::writeLog('cas','Logout request:' . $logoutMessage, \OCP\Util::DEBUG);
 		}
-		$relayStateValue = htmlspecialchars($_GET['RelayState'], ENT_QUOTES, 'UTF-8');
+		$relayStateValue = OC_Util::sanitizeHTML($_GET['RelayState'], ENT_QUOTES, 'UTF-8');
 		if (!empty($relayStateValue)) {
 			$casHostname = OCP\Config::getAppValue('user_cas', 'cas_server_hostname', $_SERVER['SERVER_NAME']);
 			$casPort = (int) OCP\Config::getAppValue('user_cas', 'cas_server_port', 443);
@@ -124,7 +124,7 @@ function casSingleLogoutRequestHandle() {
 }
 
 function uncompressCasLogoutMessage() {
-	$message = htmlspecialchars($_GET['SAMLRequest'], ENT_QUOTES, 'UTF-8');
+	$message = OC_Util::sanitizeHTML($_GET['SAMLRequest'], ENT_QUOTES, 'UTF-8');
 	return gzinflate(base64_decode($message));
 }
 
