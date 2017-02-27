@@ -42,13 +42,20 @@ if (OCP\App::isEnabled('user_cas')) {
 	if ((isset($_GET['app']) && $_GET['app'] == 'user_cas') || $force_login) {
 
 		if (OC_USER_CAS::initialized_php_cas()) {
-
 			phpCAS::forceAuthentication();
 
-			if (!OCP\User::isLoggedIn()) {
+			$userSession = OC_User::getUserSession();
+			$uid = phpCAS::getUser();
+			if (!$userSession->login($uid, '')) {
 				\OCP\Util::writeLog('cas','Error trying to authenticate the user', \OCP\Util::DEBUG);
 			}
-		
+			else {
+				$request = \OC::$server->getRequest();
+				$user = $userSession->getUser();
+				$password = OC_USER_CAS::generateRandomBytes(20);
+				$userSession->createSessionToken($request, $user->getUID(), $uid, $password);
+			}
+
 			if (isset($_SERVER["QUERY_STRING"]) && !empty($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] != 'app=user_cas') {
 				header('Location: ' . OC::$WEBROOT . '/?' . $_SERVER["QUERY_STRING"]);
 				exit();
@@ -59,8 +66,7 @@ if (OCP\App::isEnabled('user_cas')) {
 		OC_Util::redirectToDefaultPage();
 	}
 
-
-	if (!phpCAS::isAuthenticated() && !OCP\User::isLoggedIn()) {
+	if (!phpCAS::isAuthenticated() && !OC_User::isLoggedIn()) {
 		OC_App::registerLogIn(array('href' => '?app=user_cas', 'name' => 'CAS Login'));
 	}
 
@@ -80,7 +86,7 @@ function shouldEnforceAuthentication()
 		return false;
 	}
 
-	if (OCP\User::isLoggedIn() || isset($_GET['admin_login'])) {
+	if (OC_User::isLoggedIn() || isset($_GET['admin_login'])) {
 		return false;
 	}
 
