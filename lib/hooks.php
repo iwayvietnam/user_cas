@@ -70,7 +70,7 @@ class OC_USER_CAS_Hooks {
 						return false;
 					}
 					else {
-						$random_password = OC_USER_CAS_Hooks::generateRandomBytes(20);
+						$random_password = OC_USER_CAS::generateRandomBytes(20);
 						\OCP\Util::writeLog('cas','Creating new user: '.$uid, \OCP\Util::DEBUG);
 						$userDatabase->createUser($uid, $random_password);
 
@@ -119,10 +119,6 @@ class OC_USER_CAS_Hooks {
 			phpCAS::logout();
 		
 		return true;
-	}
-
-	public static function generateRandomBytes($length = 30) {
-		return \OC::$server->getSecureRandom()->getMediumStrengthGenerator()->generate($length, \OCP\Security\ISecureRandom::CHAR_LOWER.\OCP\Security\ISecureRandom::CHAR_DIGITS);
 	}
 }
 
