@@ -30,7 +30,7 @@ class OC_USER_CAS_Hooks {
 
 		$uid = $parameters['uid'];
 		$casBackend = OC_USER_CAS::getInstance();
-		$userDatabase = new OC_User_Database;
+		$userDatabase = new \OC\User\Database;
 
 		if (phpCAS::isAuthenticated()) {
 			// $cas_attributes may vary in name, therefore attributes are fetched to $attributes
@@ -40,10 +40,8 @@ class OC_USER_CAS_Hooks {
 			// parameters 
 			$attributes = array();
 
-
 			if ($cas_uid == $uid) {
 				\OCP\Util::writeLog('cas','attr  \"'.implode(',',$cas_attributes).'\" for the user: '.$uid, \OCP\Util::DEBUG);
-
 
 				if (array_key_exists($casBackend->displayNameMapping, $cas_attributes)) 
 					$attributes['cas_name'] = $cas_attributes[$casBackend->displayNameMapping];	
@@ -77,7 +75,6 @@ class OC_USER_CAS_Hooks {
 						// after creating the user, fill the attributes
 						if($userDatabase->userExists($uid)) 
 							OC_USER_CAS_Hooks::update_user($uid,$attributes);
-						
 					}
 				}
 
@@ -92,7 +89,6 @@ class OC_USER_CAS_Hooks {
 	}
 
 	static public function update_user($uid, $attributes) {
-
 		$casBackend = OC_USER_CAS::getInstance();
 
 		\OCP\Util::writeLog('cas','Updating data of the user: '.$uid,\OCP\Util::DEBUG);
