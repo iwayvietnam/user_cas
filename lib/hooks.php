@@ -45,13 +45,15 @@ class OC_USER_CAS_Hooks {
 
 				if (array_key_exists($casBackend->displayNameMapping, $cas_attributes)) 
 					$attributes['cas_name'] = $cas_attributes[$casBackend->displayNameMapping];	
-				else 
+				else if (!empty($cas_attributes['cn'])) {
 					$attributes['cas_name'] = $cas_attributes['cn'];
+				}
                 
 				if (array_key_exists($casBackend->mailMapping, $cas_attributes)) 
 					$attributes['cas_email'] = $cas_attributes[$casBackend->mailMapping];
-				else 
+				else if (!empty($cas_attributes['mail'])) {
 					$attributes['cas_email'] = $cas_attributes['mail'];
+				}
 
 				if (array_key_exists($casBackend->groupMapping, $cas_attributes)) {
 					$attributes['cas_groups'] = $cas_attributes[$casBackend->groupMapping];
@@ -68,7 +70,7 @@ class OC_USER_CAS_Hooks {
 						return false;
 					}
 					else {
-						$random_password = OC_Util::generateRandomBytes(20);
+						$random_password = OC_USER_CAS_Hooks::generateRandomBytes(20);
 						\OCP\Util::writeLog('cas','Creating new user: '.$uid, \OCP\Util::DEBUG);
 						$userDatabase->createUser($uid, $random_password);
 
@@ -119,6 +121,9 @@ class OC_USER_CAS_Hooks {
 		return true;
 	}
 
+	public static function generateRandomBytes($length = 30) {
+		return \OC::$server->getSecureRandom()->getMediumStrengthGenerator()->generate($length, \OCP\Security\ISecureRandom::CHAR_LOWER.\OCP\Security\ISecureRandom::CHAR_DIGITS);
+	}
 }
 
 function update_mail($uid, $email) {
