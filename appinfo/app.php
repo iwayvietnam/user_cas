@@ -45,8 +45,7 @@ if (OCP\App::isEnabled('user_cas')) {
 
 			phpCAS::forceAuthentication();
 
-			if (!OC_User::login('', '')) {
-				$error = true;
+			if (!OCP\User::isLoggedIn()) {
 				\OCP\Util::writeLog('cas','Error trying to authenticate the user', \OCP\Util::DEBUG);
 			}
 		
@@ -99,7 +98,7 @@ function shouldEnforceAuthentication()
 
 function casSingleLogoutRequestHandle() {
 	if (isCasFrontChannelLogoutRequest()) {
-		OC_User::logout();
+		OCP\User::logout();
 
 		$logoutMessage = uncompressCasLogoutMessage();
 		if (!empty($logoutMessage)) {
