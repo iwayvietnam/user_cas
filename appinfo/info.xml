@@ -11,4 +11,8 @@
         <prelogin/>
         <authentication/>
 	</types>
+	<dependencies>
+		<lib>ldap</lib>
+		<owncloud min-version="9.1" max-version="9.1" />
+	</dependencies>
 </info>
