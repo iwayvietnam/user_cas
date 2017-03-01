@@ -131,9 +131,9 @@ function update_mail($uid, $email) {
 }
 
 function update_name($uid, $name) {
-		\OCP\Util::writeLog('cas','Set Name -'.$name.'- for the user: '.$uid, \OCP\Util::DEBUG);
-		$casBackend = OC_USER_CAS::getInstance();
-		$casBackend->setDisplayName($uid, $name);
+	\OCP\Util::writeLog('cas','Set Name -'.$name.'- for the user: '.$uid, \OCP\Util::DEBUG);
+	$casBackend = OC_USER_CAS::getInstance();
+	$casBackend->setDisplayName($uid, $name);
 }
 
 /**

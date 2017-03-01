@@ -46,14 +46,13 @@ if (OCP\App::isEnabled('user_cas')) {
 
 			$userSession = OC_User::getUserSession();
 			$uid = phpCAS::getUser();
-			if (!$userSession->login($uid, '')) {
+			if (!$userSession->login($uid, null)) {
 				\OCP\Util::writeLog('cas','Error trying to authenticate the user', \OCP\Util::DEBUG);
 			}
 			else {
 				$request = \OC::$server->getRequest();
 				$user = $userSession->getUser();
-				$password = OC_USER_CAS::generateRandomBytes(20);
-				$userSession->createSessionToken($request, $user->getUID(), $uid, $password);
+				$userSession->createSessionToken($request, $user->getUID(), $uid, null);
 			}
 
 			if (isset($_SERVER["QUERY_STRING"]) && !empty($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] != 'app=user_cas') {
