@@ -86,7 +86,7 @@ class OC_USER_CAS extends OC_User_Backend {
 				phpCAS::setDebug($casDebugFile);
 			}
 			
-			phpCAS::client($casVersion,$casHostname,(int)$casPort,$casPath,false);
+			phpCAS::client($casVersion, $casHostname, (int)$casPort, $casPath, false);
 			
 			if (!empty($cas_service_url)) {
 				phpCAS::setFixedServiceURL($cas_service_url);
@@ -153,7 +153,7 @@ class OC_USER_CAS extends OC_User_Backend {
 	*/
 	public function setDisplayName($uid,$displayName) {
 		$udb = new OC_User_Database;
-		$udb->setDisplayName($uid,$displayName);
+		$udb->setDisplayName($uid, $displayName);
 	}
 
 }
