@@ -47,13 +47,15 @@ class OC_USER_CAS_Hooks {
 
 				if (array_key_exists($casBackend->displayNameMapping, $cas_attributes)) 
 					$attributes['cas_name'] = $cas_attributes[$casBackend->displayNameMapping];	
-				else 
+				else if (!empty($cas_attributes['cn'])) {
 					$attributes['cas_name'] = $cas_attributes['cn'];
+				}
                 
 				if (array_key_exists($casBackend->mailMapping, $cas_attributes)) 
 					$attributes['cas_email'] = $cas_attributes[$casBackend->mailMapping];
-				else 
+				else if (!empty($cas_attributes['mail'])) {
 					$attributes['cas_email'] = $cas_attributes['mail'];
+				}
 
 				if (array_key_exists($casBackend->groupMapping, $cas_attributes)) {
 					$attributes['cas_groups'] = $cas_attributes[$casBackend->groupMapping];
