@@ -11,4 +11,7 @@
         <prelogin/>
         <authentication/>
 	</types>
+	<dependencies>
+		<owncloud min-version="8.2" />
+	</dependencies>
 </info>
