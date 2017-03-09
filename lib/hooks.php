@@ -117,6 +117,9 @@ class OC_USER_CAS_Hooks {
 		if (\OC::$server->getConfig()->getAppValue('user_cas', 'cas_disable_logout', false)) {
 			return true;
 		}
+		if (OC_USER_CAS::isCasFrontChannelLogoutRequest()) {
+			return true;
+		}
 
 		$casBackend = OC_USER_CAS::getInstance();
 
