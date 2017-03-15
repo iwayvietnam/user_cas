@@ -43,14 +43,16 @@ class OC_USER_CAS_Hooks {
 			if ($cas_uid == $uid) {
 				\OCP\Util::writeLog('cas','attr  \"'.implode(',',$cas_attributes).'\" for the user: '.$uid, \OCP\Util::DEBUG);
 
-				if (array_key_exists($casBackend->displayNameMapping, $cas_attributes)) 
+				if (array_key_exists($casBackend->displayNameMapping, $cas_attributes)) {
 					$attributes['cas_name'] = $cas_attributes[$casBackend->displayNameMapping];	
+				}
 				else if (!empty($cas_attributes['cn'])) {
 					$attributes['cas_name'] = $cas_attributes['cn'];
 				}
                 
-				if (array_key_exists($casBackend->mailMapping, $cas_attributes)) 
+				if (array_key_exists($casBackend->mailMapping, $cas_attributes)) {
 					$attributes['cas_email'] = $cas_attributes[$casBackend->mailMapping];
+				}
 				else if (!empty($cas_attributes['mail'])) {
 					$attributes['cas_email'] = $cas_attributes['mail'];
 				}
@@ -81,8 +83,9 @@ class OC_USER_CAS_Hooks {
 				}
 
 				// try to update user attributes
-				if ($casBackend->updateUserData) 
+				if ($casBackend->updateUserData) {
 					OC_USER_CAS_Hooks::update_user($cas_uid,$attributes);
+				}
 
 				return true;
 			}
@@ -110,6 +113,9 @@ class OC_USER_CAS_Hooks {
 
 	static public function logout($parameters) {
 		if (\OC::$server->getConfig()->getAppValue('user_cas', 'cas_disable_logout', false)) {
+			return true;
+		}
+		if (OC_USER_CAS::isCasFrontChannelLogoutRequest()) {
 			return true;
 		}
 

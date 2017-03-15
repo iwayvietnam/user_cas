@@ -22,7 +22,7 @@
  *
  */
 
-#require_once(__DIR__ . '/lib/ldap_backend_adapter.php'); // Not required in 8.2, we now have an autoloader 
+require_once(__DIR__ . '/lib/ldap_backend_adapter.php');
 use OCA\user_cas\lib\LdapBackendAdapter;
 
 class OC_USER_CAS extends OC_User_Backend {
@@ -86,7 +86,7 @@ class OC_USER_CAS extends OC_User_Backend {
 				phpCAS::setDebug($casDebugFile);
 			}
 			
-			phpCAS::client($casVersion, $casHostname, (int)$casPort,$casPath, false);
+			phpCAS::client($casVersion, $casHostname, (int) $casPort, $casPath, false);
 			
 			if (!empty($cas_service_url)) {
 				phpCAS::setFixedServiceURL($cas_service_url);
@@ -138,6 +138,7 @@ class OC_USER_CAS extends OC_User_Backend {
 				return $ocname;
 			}
 		}
+
 		return $uid;
 	}
 
@@ -158,6 +159,19 @@ class OC_USER_CAS extends OC_User_Backend {
 
 	public static function generateRandomBytes($length = 30) {
 		return \OC::$server->getSecureRandom()->getMediumStrengthGenerator()->generate($length, \OCP\Security\ISecureRandom::CHAR_LOWER.\OCP\Security\ISecureRandom::CHAR_DIGITS);
+	}
+
+	public static function generateRandomBytes($length = 30) {
+		return \OC::$server->getSecureRandom()->getMediumStrengthGenerator()->generate($length, \OCP\Security\ISecureRandom::CHAR_LOWER.\OCP\Security\ISecureRandom::CHAR_DIGITS);
+	}
+
+	public static function isCasFrontChannelLogoutRequest() {
+		return !empty($_GET['SAMLRequest']);
+	}
+
+	public static function uncompressCasLogoutMessage() {
+		$message = OC_Util::sanitizeHTML($_GET['SAMLRequest'], ENT_QUOTES, 'UTF-8');
+		return gzinflate(base64_decode($message));
 	}
 }
 

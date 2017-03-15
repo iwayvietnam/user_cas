@@ -75,8 +75,7 @@ if (OCP\App::isEnabled('user_cas')) {
 /**
  * Check if login should be enforced using user_cas
  */
-function shouldEnforceAuthentication()
-{
+function shouldEnforceAuthentication() {
 	if (OC::$CLI) {
 		return false;
 	}
@@ -102,10 +101,10 @@ function shouldEnforceAuthentication()
 }
 
 function casSingleLogoutRequestHandle() {
-	if (isCasFrontChannelLogoutRequest()) {
+	if (OC_USER_CAS::isCasFrontChannelLogoutRequest()) {
 		OCP\User::logout();
 
-		$logoutMessage = uncompressCasLogoutMessage();
+		$logoutMessage = OC_USER_CAS::uncompressCasLogoutMessage();
 		if (!empty($logoutMessage)) {
 			\OCP\Util::writeLog('cas','Logout request:' . $logoutMessage, \OCP\Util::DEBUG);
 		}
@@ -126,13 +125,4 @@ function casSingleLogoutRequestHandle() {
 			exit();
 		}
 	}
-}
-
-function uncompressCasLogoutMessage() {
-	$message = OC_Util::sanitizeHTML($_GET['SAMLRequest'], ENT_QUOTES, 'UTF-8');
-	return gzinflate(base64_decode($message));
-}
-
-function isCasFrontChannelLogoutRequest() {
-	return !empty($_GET['SAMLRequest']);
 }
