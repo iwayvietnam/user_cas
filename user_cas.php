@@ -58,11 +58,11 @@ class OC_USER_CAS extends OC_User_Backend {
 		$this->displayNameMapping = OCP\Config::getAppValue('user_cas', 'cas_displayName_mapping', '');
 		$this->groupMapping = OCP\Config::getAppValue('user_cas', 'cas_group_mapping', '');
 
-		self :: initialized_php_cas();
+		self::initialized_php_cas();
 	}
 
 	public static function initialized_php_cas() {
-		if(!self :: $_initialized_php_cas) {
+		if(!self::$_initialized_php_cas) {
 			$casVersion = OCP\Config::getAppValue('user_cas', 'cas_server_version', '2.0');
 			$casHostname = OCP\Config::getAppValue('user_cas', 'cas_server_hostname', $_SERVER['SERVER_NAME']);
 			$casPort = OCP\Config::getAppValue('user_cas', 'cas_server_port', 443);
@@ -98,9 +98,9 @@ class OC_USER_CAS extends OC_User_Backend {
 			else {
 				phpCAS::setNoCasServerValidation();
 			}
-			self :: $_initialized_php_cas = true;
+			self::$_initialized_php_cas = true;
 		}
-		return self :: $_initialized_php_cas;
+		return self::$_initialized_php_cas;
 	}
 
 	private function initializeLdapBackendAdapter() {
@@ -114,7 +114,7 @@ class OC_USER_CAS extends OC_User_Backend {
 	}
 
 	public function checkPassword($uid, $password) {
-		if (!self :: initialized_php_cas()) {
+		if (!self::initialized_php_cas()) {
 			return false;
 		}
 
