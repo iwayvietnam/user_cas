@@ -50,7 +50,7 @@ if (OCP\App::isEnabled('user_cas')) {
 				$error = true;
 				\OCP\Util::writeLog('cas','Error trying to authenticate the user', \OCP\Util::DEBUG);
 			}
-		
+
 			if (isset($_SERVER["QUERY_STRING"]) && !empty($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] != 'app=user_cas') {
 				header('Location: ' . OC::$WEBROOT . '/?' . $_SERVER["QUERY_STRING"]);
 				exit();
@@ -81,7 +81,7 @@ function shouldEnforceAuthentication() {
 		return false;
 	}
 
-	if (OCP\User::isLoggedIn() || isset($_GET['admin_login'])) {
+	if (phpCAS::isAuthenticated() || OCP\User::isLoggedIn() || isset($_GET['admin_login'])) {
 		return false;
 	}
 
