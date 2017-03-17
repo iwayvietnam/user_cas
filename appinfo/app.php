@@ -42,6 +42,16 @@ if (OCP\App::isEnabled('user_cas')) {
 	if ((isset($_GET['app']) && $_GET['app'] == 'user_cas') || $force_login) {
 
 		if (OC_USER_CAS::initialized_php_cas()) {
+
+			if ($force_login) {
+				$cas_service_url = OCP\Config::getAppValue('user_cas', 'cas_service_url', '');
+				if (empty($cas_service_url)) {
+					$urlGenerator = \OC::$server->getURLGenerator();
+					$cas_service_url = $urlGenerator->getAbsoluteURL('?app=user_cas');
+					phpCAS::setFixedServiceURL($cas_service_url);
+				}
+			}
+
 			phpCAS::forceAuthentication();
 
 			$userSession = OC_User::getUserSession();
@@ -84,7 +94,7 @@ function shouldEnforceAuthentication() {
 		return false;
 	}
 
-	if (OC_User::isLoggedIn() || isset($_GET['admin_login'])) {
+	if (phpCAS::isAuthenticated() || OC_User::isLoggedIn() || isset($_GET['admin_login'])) {
 		return false;
 	}
 
