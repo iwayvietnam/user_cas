@@ -31,7 +31,7 @@ $params = array('cas_server_version', 'cas_server_hostname', 'cas_server_port', 
 OCP\Util::addscript('user_cas', 'settings');
 OCP\Util::addStyle('user_cas', 'settings');
 
-if ($_POST) {
+if ($_POST && isset($_POST['user_cas_setting'])) {
 	// CSRF check
 	OCP\JSON::callCheck();
 
@@ -39,7 +39,7 @@ if ($_POST) {
 		if (isset($_POST[$param])) {
 			OCP\Config::setAppValue('user_cas', $param, $_POST[$param]);
 		}
-		elseif (in_array($param,array('cas_force_login', 'cas_autocreate','cas_update_user_data','cas_link_to_ldap_backend','cas_disable_logout'))) {
+		elseif (in_array($param, array('cas_force_login', 'cas_autocreate','cas_update_user_data','cas_link_to_ldap_backend','cas_disable_logout'))) {
 			// unchecked checkboxes are not included in the post paramters
 			OCP\Config::setAppValue('user_cas', $param, 0);
 		}

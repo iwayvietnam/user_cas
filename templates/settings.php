@@ -47,6 +47,7 @@
 		<p><label for="cas_debug_file"><?php p($l->t('PHP CAS debug file'));?></label><input type="text" id="cas_debug_file" name="cas_debug_file" value="<?php p($_['cas_debug_file']); ?>" /></p>
 	</fieldset>
 	<input type="submit" value="<?php p($l->t('Save'));?>" />
+	<input type="hidden" value="1" name="user_cas_setting" />
 	</div>
 
 </form>
