@@ -90,7 +90,8 @@ function shouldEnforceAuthentication() {
 		return false;
 	}
 
-	if (phpCAS::isAuthenticated() || OCP\User::isLoggedIn() || isset($_GET['admin_login'])) {
+	$isSLO = OC_USER_CAS::isCasFrontChannelLogoutRequest();
+	if ($isSLO || phpCAS::isAuthenticated() || OCP\User::isLoggedIn() || isset($_GET['admin_login'])) {
 		return false;
 	}
 
