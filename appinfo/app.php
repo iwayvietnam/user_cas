@@ -90,8 +90,14 @@ function shouldEnforceAuthentication() {
 		return false;
 	}
 
+    $pathInfo = !empty($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : $_SERVER['REQUEST_URI'];
+    $isShareLink = false;
+    if (preg_match('/\/s\/.*/', $pathInfo)) {
+        $isShareLink = true;
+    }
+
 	$isSLO = OC_USER_CAS::isCasFrontChannelLogoutRequest();
-	if ($isSLO || phpCAS::isAuthenticated() || OCP\User::isLoggedIn() || isset($_GET['admin_login'])) {
+	if ($isShareLink || $isSLO || phpCAS::isAuthenticated() || OCP\User::isLoggedIn() || isset($_GET['admin_login'])) {
 		return false;
 	}
 
