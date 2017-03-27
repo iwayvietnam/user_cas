@@ -37,7 +37,6 @@
                     <name>cas_session_id</name>
                 </field>
             </index>
-
             <index>
                 <name>cas_session_user</name>
                 <field>
